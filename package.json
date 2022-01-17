@@ -4,11 +4,12 @@
   "description": "Ест вискас, к туалету приучен. отредачу описание, когда будет время.",
   "main": "index.js",
   "scripts": {
-    "go": " node index.js"
+    "go": " node ./src/index.js"
   },
   "author": "Мяу, повелитель котов",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^13.6.0"
+    "discord.js": "^13.6.0",
+    "dotenv": "^14.1.0"
   }
 }
