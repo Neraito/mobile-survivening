@@ -126,6 +126,7 @@ bot.on('messageCreate', async (message) => {
     codeMessagesIds.forEach(async (id) => {
       
       let msg = await bot.channels.resolve(piecesChan).messages.fetch(id);
+      console.log(msg)
       if (msg.content.startsWith('bev')) {
         let msgContentTemp = msg.content.slice(3)
         codeTemp.push(msgContentTemp)
