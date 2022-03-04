@@ -159,13 +159,13 @@ bot.on('messageCreate', async (message) => {
       let lastCodeTemp = lastCode.slice(8, codeLength);
       code = code + lastCodeTemp;
       console.log(code);
-      //myEvalCodeBuild(message, code)
+      myEvalCodeBuild(message, code)
     }
     else if (lastCode.startsWith('ev')) {
       let lastCodeTemp = lastCode.slice(3);
       code = code + lastCodeTemp
       console.log(code);
-      //myEvalCodeBuild(message, code)
+      myEvalCodeBuild(message, code)
     }
     
   }
