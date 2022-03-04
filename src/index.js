@@ -129,6 +129,7 @@ bot.on('messageCreate', async (message) => {
       console.log(msg.content)
       if (msg.content.startsWith('bev```js\nasync')) {
         let msgContentTemp = msg.content.slice(15, msg.content.length - 3)
+        console.log(msgContentTemp)
         codeTemp.push(msgContentTemp)
         isAsync = true
       }
