@@ -114,21 +114,21 @@ bot.on('messageCreate', async (message) => {
     codeMessagesIds.forEach(async (id) => {
       
       let msg = await bot.messages.fetch(id);
-      if (msg.content.startsWith('ev')) {
-        let msgContentTemp = msg.content.slice(2)
+      if (msg.content.startsWith('bev')) {
+        let msgContentTemp = msg.content.slice(3)
         codeTemp.push(msgContentTemp)
       }
-      else if (msg.content.startsWith('ev async')) {
-        let msgContentTemp = msg.content.slice(8)
+      else if (msg.content.startsWith('bev async')) {
+        let msgContentTemp = msg.content.slice(9)
         codeTemp.push(msgContentTemp)
         isAsync = true
       }
-      else if (msg.content.startsWith('ev```js\n')) {
-        let msgContentTemp = msg.content.slice(8, msg.content.length - 3)
+      else if (msg.content.startsWith('bev```js\n')) {
+        let msgContentTemp = msg.content.slice(9, msg.content.length - 3)
         codeTemp.push(msgContentTemp)
       }
-      else if (msg.content.startsWith('ev```js\nasync')) {
-        let msgContentTemp = msg.content.slice(13, msg.content.length - 3)
+      else if (msg.content.startsWith('bev```js\nasync')) {
+        let msgContentTemp = msg.content.slice(14, msg.content.length - 3)
         codeTemp.push(msgContentTemp)
         isAsync = true
       }
