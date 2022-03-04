@@ -107,7 +107,7 @@ bot.on('messageCreate', async (message) => {
   else if (message.content.startsWith('build')) {
     let content = message.content.slice(6);
     let codeMessagesIds = content.split(' ');
-    console.log(codeMessages)
+    console.log(codeMessagesIds)
     
     let codeTemp = [];
     let isAsync = false;
