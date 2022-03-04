@@ -149,7 +149,7 @@ bot.on('messageCreate', async (message) => {
       
     })
     console.log(codeTemp)
-    let code = (isAsync == true) ? 'async' : ''
+    let code = (isAsync == true) ? 'async\n' : ''
     console.log(code)
     code = code + codeTemp.join('\n')
     console.log(code)
