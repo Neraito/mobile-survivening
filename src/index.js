@@ -111,8 +111,12 @@ bot.on('messageCreate', async (message) => {
     let piecesChan = codeMessagesIds[0]
     let lastCode = codeMessagesIds.at(-1)
     
+    console.log(codeMessagesIds)
+    console.log(piecesChan)
+    console.log(lastCode)
+    
     codeMessagesIds = codeMessagesIds.shift()
-    codeMessagesIds.splice(0, -1)
+    codeMessagesIds.slice(0, -1)
     console.log(codeMessagesIds)
     
     let codeTemp = [];
