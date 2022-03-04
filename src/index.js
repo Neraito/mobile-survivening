@@ -93,7 +93,7 @@ bot.on('messageCreate', async (message) => {
     let code = message.content.slice(8, codeLength);
     console.log(code);
     
-    myEvalCodeBuild(code)
+    myEvalCodeBuild(message, code)
     
   } // ======================================================================//
   else if (message.content.startsWith('ev')) {
@@ -101,7 +101,7 @@ bot.on('messageCreate', async (message) => {
     let code = message.content.slice(3);
     console.log(code);
     
-    myEvalCodeBuild(code)
+    myEvalCodeBuild(message, code)
     
   } // ======================================================================//
   else if (message.content.startsWith('build')) {
@@ -123,10 +123,10 @@ bot.on('messageCreate', async (message) => {
     
     let codeTemp = [];
     let isAsync = false;
-    await codeMessagesIds.forEach(async (id) => {
+    codeMessagesIds.forEach(async (id) => {
       
       let msg = await bot.channels.resolve(piecesChan).messages.fetch(id);
-      console.log(msg)
+      console.log(msg.content)
       if (msg.content.startsWith('bev')) {
         let msgContentTemp = msg.content.slice(3)
         codeTemp.push(msgContentTemp)
@@ -158,19 +158,19 @@ bot.on('messageCreate', async (message) => {
       let lastCodeTemp = lastCode.slice(8, codeLength);
       code = code + lastCodeTemp;
       console.log(code);
-      //myEvalCodeBuild(code)
+      //myEvalCodeBuild(message, code)
     }
     else if (lastCode.startsWith('ev')) {
       let lastCodeTemp = lastCode.slice(3);
       code = code + lastCodeTemp
       console.log(code);
-      //myEvalCodeBuild(code)
+      //myEvalCodeBuild(message, code)
     }
     
   }
   
 });
-async function myEvalCodeBuild(code) {
+async function myEvalCodeBuild(message, code) {
     if (code.startsWith('async')) {
       code = code.slice(5);
       code = [
