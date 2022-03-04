@@ -123,7 +123,7 @@ bot.on('messageCreate', async (message) => {
     
     let codeTemp = [];
     let isAsync = false;
-    codeMessagesIds.forEach(async (id) => {
+    await codeMessagesIds.forEach(async (id) => {
       
       let msg = await bot.channels.resolve(piecesChan).messages.fetch(id);
       console.log(msg.content)
