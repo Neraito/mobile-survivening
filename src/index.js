@@ -106,14 +106,20 @@ bot.on('messageCreate', async (message) => {
   } // ======================================================================//
   else if (message.content.startsWith('build')) {
     let content = message.content.slice(6);
-    let codeMessagesIds = content.split(' ');
+    let codeMessagesIds = content.split('%%');
+    
+    let piecesChan = codeMessagesIds[0]
+    let lastCode = codeMessagesIds.at(-1)
+    
+    codeMessagesIds = codeMessagesIds.shift()
+    codeMessagesIds.slice(0, -1)
     console.log(codeMessagesIds)
     
     let codeTemp = [];
     let isAsync = false;
     codeMessagesIds.forEach(async (id) => {
       
-      let msg = await bot.messages.fetch(id);
+      let msg = await bot.channels.resolve(piecesChan).messages.fetch(id);
       if (msg.content.startsWith('bev')) {
         let msgContentTemp = msg.content.slice(3)
         codeTemp.push(msgContentTemp)
@@ -137,6 +143,21 @@ bot.on('messageCreate', async (message) => {
     let code = (isAsync == true) ? 'async' : ''
     code = code + codeTemp.join()
     console.log(code)
+    
+    if (lastCode.startsWith('ev```js')) {
+      const codeLength = lastCode.length - 3;
+      let lastCodeTemp = message.content.slice(8, codeLength);
+      code = code + lastCodeTemp;
+      console.log(code);
+      //myEvalCodeBuild(code)
+    }
+    else if (lastCode.startsWith('ev')) {
+      let lastCodeTemp = lastCode.slice(3);
+      code = code + lastCodeTemp
+      console.log(code);
+      //myEvalCodeBuild(code)
+    }
+    
   }
   
 });
