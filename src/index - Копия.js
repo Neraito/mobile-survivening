@@ -93,7 +93,61 @@ bot.on('messageCreate', async (message) => {
     let code = message.content.slice(8, codeLength);
     console.log(code);
     
-    myEvalCodeBuild(code)
+    if (code.startsWith('async')) {
+      code = code.slice(5);
+      code = [ 
+            'const japon = {',
+              'log: (variable) => { jlog(jpm, 0, variable) },',
+              'log2: (variable, depth) => { jlog(jpm, depth, variable) },',
+              'log3: (variable) => { jlog2(jpm, variable) }',
+            '}',
+            code
+      ].join('\n');
+      code = [
+            '(async () => {',
+              'try {',
+                `${code}`,
+              '} catch(err) {',
+                'return {error: err.name, message: err.message}',
+              '}',
+            '})()'
+      ].join('\n');
+    }
+    else {
+      code = [  
+            'const japon = {',
+              'log: (variable) => { jlog(jpm, 0, variable) },',
+              'log2: (variable, depth) => { jlog(jpm, depth, variable) },',
+              'log3: (variable) => { jlog2(jpm, variable) }',
+            '}',
+            code
+      ].join('\n');
+    }
+    console.log(code);
+    
+    const output = await myEval(message, Util, util, code);
+    
+    
+    let codeOutput = `${util.inspect(output, { depth: 2, showHidden: true })}`;
+    let cleanOutput = Util.cleanCodeBlockContent(codeOutput);
+    
+    if (cleanOutput.length > 2000) {
+      codeOutput = `${util.inspect(output, { depth: 1, showHidden: true })}`;
+      cleanOutput = Util.cleanCodeBlockContent(codeOutput);
+    }
+    if (cleanOutput.length > 2000) {
+      codeOutput = `${util.inspect(output, { depth: 0, showHidden: true })}`;
+      cleanOutput = Util.cleanCodeBlockContent(codeOutput);
+    }
+    
+    
+    if (cleanOutput.length > 2000) {
+      return message.channel.send({
+        files: [{ attachment: Buffer.from(codeOutput), name: 'output.txt' }]
+      });
+    }
+    return message.channel.send(`\`\`\`js\n${cleanOutput}\n\`\`\``);
+    
     
   } // ======================================================================//
   else if (message.content.startsWith('ev')) {
@@ -101,46 +155,6 @@ bot.on('messageCreate', async (message) => {
     let code = message.content.slice(3);
     console.log(code);
     
-    myEvalCodeBuild(code)
-    
-  } // ======================================================================//
-  else if (message.content.startsWith('build')) {
-    let content = message.content.slice(6);
-    let codeMessagesIds = content.split(' ');
-    console.log(codeMessages)
-    
-    let codeTemp = [];
-    let isAsync = false;
-    codeMessagesIds.forEach(async (id) => {
-      
-      let msg = await bot.messages.fetch(id);
-      if (msg.content.startsWith('ev')) {
-        let msgContentTemp = msg.content.slice(2)
-        codeTemp.push(msgContentTemp)
-      }
-      else if (msg.content.startsWith('ev async')) {
-        let msgContentTemp = msg.content.slice(8)
-        codeTemp.push(msgContentTemp)
-        isAsync = true
-      }
-      else if (msg.content.startsWith('ev```js\n')) {
-        let msgContentTemp = msg.content.slice(8, msg.content.length - 3)
-        codeTemp.push(msgContentTemp)
-      }
-      else if (msg.content.startsWith('ev```js\nasync')) {
-        let msgContentTemp = msg.content.slice(13, msg.content.length - 3)
-        codeTemp.push(msgContentTemp)
-        isAsync = true
-      }
-      
-    })
-    let code = (isAsync == true) ? 'async' : ''
-    code = code + codeTemp.join()
-    console.log(code)
-  }
-  
-});
-async function myEvalCodeBuild(code) {
     if (code.startsWith('async')) {
       code = code.slice(5);
       code = [
@@ -198,7 +212,10 @@ async function myEvalCodeBuild(code) {
     
     return message.channel.send(`\`\`\`js\n${cleanOutput}\n\`\`\``);
     
-}
+  }
+  
+});
+
 async function myEval(jpm, Util, util, code) {
   let result;
   try {
