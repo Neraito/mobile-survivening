@@ -151,7 +151,7 @@ bot.on('messageCreate', async (message) => {
     console.log(codeTemp)
     let code = (isAsync == true) ? 'async' : ''
     console.log(code)
-    code = code + codeTemp.join()
+    code = code + codeTemp.join('\n')
     console.log(code)
     
     if (lastCode.startsWith('ev```js')) {
