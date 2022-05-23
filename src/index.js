@@ -7,87 +7,26 @@ const { Client, Intents } = require('discord.js');
 
 global.bot = new Client({ intents: new Intents(config.intents) });
 
+process.on('uncaughtException', (err) => {
+  console.log('Ошибка ять: ' + err);
+})
 
-bot.on('ready', () => {
-  
-  console.log("Привет батон, я обьелся.");
-  
-  /*bot.guilds.resolve('906583160635133983').members.fetch()
-    .then((members) => {
-      for (let member of members) console.log(member[1].user);
-    });*/
-  
-});
 
-bot.on('messageCreate', (message) => {
-
-  const prefix = '$$';
-  const content = message.content.trim();
-
-  if (message.author.bot) return;
-  if (!content.startsWith(prefix)) return;
-
-  let splittedContent = content.replace(/\s+/g, ' ').split(' ');
-
-  let commandName;
-  let commandArguments;
-  if (splittedContent[0] == prefix) {
-    commandName = splittedContent[1];
-    commandArguments = splittedContent.slice(2);
-  }
-  else {
-    commandName = splittedContent[0].slice(prefix.length);
-    commandArguments = splittedContent.slice(1);
-  }
-
-  const fs = require('fs');
-  const commands = fs.readdirSync(`${__main}/commands/`).filter(f => f.endsWith(".js"));
-
-  for (let command of commands) {
-    command = require(`${__main}/commands/${command}`);
-    if (commandName == command.name) return command.execute(message, commandArguments);
-    if (command.aliases.includes(commandName)) return command.execute(message, commandArguments);
-  }
-
-});
-
-/*bot.on('messageCreate', (message) => {
-  
-  //console.log(message)
-  if (message.author.bot) return
-  
-  
-  /*if (message.content.toLowerCase() == "привет") {
-    message.channel.send('О привет, как дела?')
-  }
-  else message.channel.send(message.content)*//*
-  
-  const messageData = {};
-  messageData.channel = message.channel.name;
-  messageData.channelId = message.channelId;
-  messageData.content = message.content;
-  messageData.messageId = message.id;
-  messageData.author = message.author;
-  
-  console.log(messageData)
-  const chan = message.guild.channels.resolve('933071567670345788')
-  chan.send(`\`\`\`js\n${util.inspect(messageData)}\n\`\`\``)
-  
-  
-  
-});*/
 const { Util } = require('discord.js');
 const util = require('util');
 const { Buffer } = require('buffer');
-bot.on('messageCreate', async (message) => {
+
+bot.on('ready', () => {  console.log("Привет батон, я обьелся.")  });
+bot.on('messageCreate', async (message) => { evalPocalypse(message) });
+    
+async function evalPocalypse(message) {
   
   if (message.author.bot) return;
   if (message.channelId == '933420681801130034') return;
-  if (message.author.id != '612409053955620898' && message.author.id != '844577235788759069') return;
+  if (!process.env.EVALERS.includes(message.author.id)) return;
   console.log(message.content);
   
-  
-  if (message.content.startsWith('ev```js')) {
+  if (message.content.startsWith(process.env.PFX+'```js')) {
     
     const codeLength = message.content.length - 3;
     let code = message.content.slice(8, codeLength);
@@ -96,7 +35,7 @@ bot.on('messageCreate', async (message) => {
     myEvalCodeBuild(message, code)
     
   } // ======================================================================//
-  else if (message.content.startsWith('ev')) {
+  else if (message.content.startsWith(process.env.PFX)) {
     
     let code = message.content.slice(3);
     console.log(code);
@@ -104,7 +43,7 @@ bot.on('messageCreate', async (message) => {
     myEvalCodeBuild(message, code)
     
   } // ======================================================================//
-  else if (message.content.startsWith('build')) {
+  else if (message.content.startsWith(process.env.PFX+'ild')) {
     let content = message.content.slice(6);
     let codeMessagesIds = content.split('%%');
     
@@ -127,23 +66,23 @@ bot.on('messageCreate', async (message) => {
       
       let msg = await bot.channels.resolve(piecesChan).messages.fetch(id);
       console.log(msg.content)
-      if (msg.content.startsWith('bev```js\nasync')) {
+      if (msg.content.startsWith('b'+process.env.PFX+'```js\nasync')) {
         let msgContentTemp = msg.content.slice(15, msg.content.length - 3)
         console.log(msgContentTemp)
         codeTemp.push(msgContentTemp)
         isAsync = true
       }
-      else if (msg.content.startsWith('bev```js\n')) {
+      else if (msg.content.startsWith('b'+process.env.PFX+'```js\n')) {
         let msgContentTemp = msg.content.slice(9, msg.content.length - 3)
         console.log(msgContentTemp)
         codeTemp.push(msgContentTemp)
       }
-      else if (msg.content.startsWith('bev async')) {
+      else if (msg.content.startsWith('b'+process.env.PFX+' async')) {
         let msgContentTemp = msg.content.slice(10)
         codeTemp.push(msgContentTemp)
         isAsync = true
       }
-      else if (msg.content.startsWith('bev')) {
+      else if (msg.content.startsWith('b'+process.env.PFX)) {
         let msgContentTemp = msg.content.slice(4)
         codeTemp.push(msgContentTemp)
       }
@@ -155,14 +94,14 @@ bot.on('messageCreate', async (message) => {
     code = code + codeTemp.join('\n')
     console.log(code)
     
-    if (lastCode.startsWith('ev```js')) {
+    if (lastCode.startsWith(process.env.PFX+'```js')) {
       const codeLength = lastCode.length - 3;
       let lastCodeTemp = lastCode.slice(8, codeLength);
       code = code + lastCodeTemp;
       console.log(code);
       myEvalCodeBuild(message, code)
     }
-    else if (lastCode.startsWith('ev')) {
+    else if (lastCode.startsWith(process.env.PFX)) {
       let lastCodeTemp = lastCode.slice(3);
       code = code + lastCodeTemp
       console.log(code);
@@ -171,7 +110,7 @@ bot.on('messageCreate', async (message) => {
     
   }
   
-});
+}
 async function myEvalCodeBuild(message, code) {
     if (code.startsWith('async')) {
       code = code.slice(5);
@@ -212,23 +151,21 @@ async function myEvalCodeBuild(message, code) {
     let codeOutput = `${util.inspect(output, { depth: 2, showHidden: true })}`;
     let cleanOutput = Util.cleanCodeBlockContent(codeOutput);
     
-    if (cleanOutput.length > 2000) {
+    if (cleanOutput.length > 1800) {
       codeOutput = `${util.inspect(output, { depth: 1, showHidden: true })}`;
       cleanOutput = Util.cleanCodeBlockContent(codeOutput);
     }
-    if (cleanOutput.length > 2000) {
+    if (cleanOutput.length > 1800) {
       codeOutput = `${util.inspect(output, { depth: 0, showHidden: true })}`;
       cleanOutput = Util.cleanCodeBlockContent(codeOutput);
     }
-    
-    
-    if (cleanOutput.length > 2000) {
+    if (cleanOutput.length > 1800) {
       return message.channel.send({
-        files: [{ attachment: Buffer.from(codeOutput), name: 'output.txt' }]
+        files: [{ attachment: Buffer.from(codeOutput.replaceAll(process.env.TOKEN, '[удалено]')), name: 'output.txt' }]
       });
     }
     
-    return message.channel.send(`\`\`\`js\n${cleanOutput}\n\`\`\``);
+    return message.channel.send(`\`\`\`js\n${cleanOutput.replaceAll(process.env.TOKEN, '[удалено]')}\n\`\`\``);
     
 }
 async function myEval(jpm, Util, util, code) {
@@ -239,7 +176,7 @@ async function myEval(jpm, Util, util, code) {
       let codeOutput = `${util.inspect(variable, { depth: depth, showHidden: true })}`;
       let cleanOutput = Util.cleanCodeBlockContent(codeOutput);
       
-      if (cleanOutput.length > 2000) {
+      if (cleanOutput.length > 1800) {
             msg.channel.send({
               files: [{ attachment: Buffer.from(codeOutput), name: 'output.txt' }]
             });
@@ -247,10 +184,9 @@ async function myEval(jpm, Util, util, code) {
             msg.channel.send(`\`\`\`js\n${cleanOutput}\n\`\`\``);
       }
     };
-    
     const jlog2 = (msg, variable) => {
           //console.log(variable)
-      if (variable.length > 2000) {
+      if (variable.length > 1800) {
             msg.channel.send({
               files: [{ attachment: Buffer.from(variable), name: 'output.txt' }]
             });
@@ -258,6 +194,7 @@ async function myEval(jpm, Util, util, code) {
             msg.channel.send(variable);
       }
     };
+    
     result = eval(code);
     console.log(result);
   }
@@ -266,11 +203,6 @@ async function myEval(jpm, Util, util, code) {
   }
   return result;
 }
-
-
-process.on('uncaughtException', (err) => {
-  console.log('Ошибка ять: ' + err);
-})
 
 
 /*bot.on('messageReactionAdd', (message) => {

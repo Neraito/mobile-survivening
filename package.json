@@ -12,11 +12,9 @@
   "author": "Япон, повелитель батонов",
   "license": "ISC",
   "dependencies": {
+    "@aero/centra": "^1.0.8",
     "date-fns": "^2.28.0",
     "discord.js": "^13.6.0",
-    "dotenv": "^14.1.0",
-    "mathjs": "^10.1.1",
-    "canvas": "^2.9.0",
-    "chartjs-node-canvas": "^4.1.6"
+    "dotenv": "^14.1.0"
   }
 }
