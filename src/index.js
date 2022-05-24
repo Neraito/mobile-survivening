@@ -30,6 +30,7 @@ async function evalPocalypse(message) {
     
     const codeLength = message.content.length - 3;
     let code = message.content.slice(8, codeLength);
+    console.log('ev```js')
     console.log(code);
     
     myEvalCodeBuild(message, code)
@@ -38,13 +39,15 @@ async function evalPocalypse(message) {
   else if (message.content.startsWith(process.env.PFX)) {
     
     let code = message.content.slice(3);
+    console.log('ev')
     console.log(code);
     
     myEvalCodeBuild(message, code)
     
   } // ======================================================================//
-  else if (message.content.startsWith(process.env.PFX+'ild')) {
-    let content = message.content.slice(6);
+  else if (message.content.startsWith('build'+process.env.PFX)) {
+    console.log('build')
+    let content = message.content.slice(8);
     let codeMessagesIds = content.split('%%');
     
     let piecesChan = codeMessagesIds[0]
@@ -66,23 +69,23 @@ async function evalPocalypse(message) {
       
       let msg = await bot.channels.resolve(piecesChan).messages.fetch(id);
       console.log(msg.content)
-      if (msg.content.startsWith('b'+process.env.PFX+'```js\nasync')) {
+      if (msg.content.startsWith('bev```js\nasync')) {
         let msgContentTemp = msg.content.slice(15, msg.content.length - 3)
         console.log(msgContentTemp)
         codeTemp.push(msgContentTemp)
         isAsync = true
       }
-      else if (msg.content.startsWith('b'+process.env.PFX+'```js\n')) {
+      else if (msg.content.startsWith('bev```js\n')) {
         let msgContentTemp = msg.content.slice(9, msg.content.length - 3)
         console.log(msgContentTemp)
         codeTemp.push(msgContentTemp)
       }
-      else if (msg.content.startsWith('b'+process.env.PFX+' async')) {
+      else if (msg.content.startsWith('bev async')) {
         let msgContentTemp = msg.content.slice(10)
         codeTemp.push(msgContentTemp)
         isAsync = true
       }
-      else if (msg.content.startsWith('b'+process.env.PFX)) {
+      else if (msg.content.startsWith('bev')) {
         let msgContentTemp = msg.content.slice(4)
         codeTemp.push(msgContentTemp)
       }
@@ -94,14 +97,14 @@ async function evalPocalypse(message) {
     code = code + codeTemp.join('\n')
     console.log(code)
     
-    if (lastCode.startsWith(process.env.PFX+'```js')) {
+    if (lastCode.startsWith('ev```js')) {
       const codeLength = lastCode.length - 3;
       let lastCodeTemp = lastCode.slice(8, codeLength);
       code = code + lastCodeTemp;
       console.log(code);
       myEvalCodeBuild(message, code)
     }
-    else if (lastCode.startsWith(process.env.PFX)) {
+    else if (lastCode.startsWith('ev')) {
       let lastCodeTemp = lastCode.slice(3);
       code = code + lastCodeTemp
       console.log(code);
