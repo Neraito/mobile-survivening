@@ -48,11 +48,13 @@ async function evalPocalypse(message) {
   else if (message.content.startsWith('build'+process.env.PFX)) {
     console.log('build')
     let content = message.content.slice(8);
-    let codeMessagesIds = content.split('%%');
+    let buildIds = content.split('::');
+    let codeMessagesIds = buildIds[1].split('%%')
     
-    let piecesChan = codeMessagesIds[0]
+    let piecesChan = buildIds[0]
     let lastCode = codeMessagesIds.at(-1)
     
+    console.log(buildIds)
     console.log(codeMessagesIds)
     console.log(piecesChan)
     console.log(lastCode)
@@ -60,7 +62,7 @@ async function evalPocalypse(message) {
     console.log('ok')
     //codeMessagesIds = codeMessagesIds.shift()
     console.log(codeMessagesIds)
-    codeMessagesIds = codeMessagesIds.slice(1, -1)
+    codeMessagesIds = codeMessagesIds.slice(0, -1)
     console.log(codeMessagesIds)
     
     let codeTemp = [];
